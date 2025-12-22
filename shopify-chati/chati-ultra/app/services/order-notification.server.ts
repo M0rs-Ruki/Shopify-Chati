@@ -85,3 +85,48 @@ export async function handleOrderCreated({
     message,
   };
 }
+
+export async function handleOrderPaid({
+  shop,
+  order,
+}: OrderNotificationInput) {
+  const customerPhone =
+    order.phone || order.shipping_address?.phone || null;
+
+  const customerEmail = order.email || null;
+
+  const customerName =
+    order.customer?.first_name ||
+    order.shipping_address?.first_name ||
+    "Customer";
+
+  const orderNumber = order.order_number || order.name || order.id;
+  const orderTotal = order.total_price || "0.00";
+  const currency = order.currency || "USD";
+
+  const message = `
+💳 Payment confirmed!
+
+Hi ${customerName},
+Your payment for order #${orderNumber} was successful.
+
+Amount paid: ${orderTotal} ${currency}
+
+Thank you for shopping with us 🙏
+  `.trim();
+
+  console.log("📨 ORDER PAID MESSAGE");
+  console.log("Shop:", shop);
+  console.log("Phone:", customerPhone || "N/A");
+  console.log("Email:", customerEmail || "N/A");
+  console.log(message);
+
+  // 🔜 Later:
+  // await sendWhatsApp(customerPhone, message);
+
+  return {
+    customerPhone,
+    customerEmail,
+    message,
+  };
+}

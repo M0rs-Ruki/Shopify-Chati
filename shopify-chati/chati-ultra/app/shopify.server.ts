@@ -23,6 +23,10 @@ const shopify = shopifyApp({
       deliveryMethod: DeliveryMethod.Http,
       callbackUrl: "/api/webhooks/orders-create",
     },
+    ORDERS_PAID: {
+      deliveryMethod: DeliveryMethod.Http,
+      callbackUrl: "/api/webhooks/orders-paid",
+    },
   },
   future: {
     expiringOfflineAccessTokens: true,

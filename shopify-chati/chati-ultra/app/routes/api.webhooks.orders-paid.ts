@@ -25,7 +25,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
   try {
     await dispatchChatiEvent({
-      type: "ORDER_PLACED",
+      type: "ORDER_PAID",
       shop,
       payload,
     });
