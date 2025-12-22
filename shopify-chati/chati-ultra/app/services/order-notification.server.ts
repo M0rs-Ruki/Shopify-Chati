@@ -86,12 +86,8 @@ export async function handleOrderCreated({
   };
 }
 
-export async function handleOrderPaid({
-  shop,
-  order,
-}: OrderNotificationInput) {
-  const customerPhone =
-    order.phone || order.shipping_address?.phone || null;
+export async function handleOrderPaid({ shop, order }: OrderNotificationInput) {
+  const customerPhone = order.phone || order.shipping_address?.phone || null;
 
   const customerEmail = order.email || null;
 
@@ -129,4 +125,58 @@ Thank you for shopping with us 🙏
     customerEmail,
     message,
   };
+}
+
+export async function handleOrderCancelled({
+  shop,
+  order,
+}: OrderNotificationInput) {
+  const customerName =
+    order.customer?.first_name ||
+    order.shipping_address?.first_name ||
+    "Customer";
+
+  const orderNumber = order.order_number || order.name || order.id;
+
+  const message = `
+❌ Order Cancelled
+
+Hi ${customerName},
+Your order #${orderNumber} has been cancelled.
+
+If you have any questions, please contact support.
+  `.trim();
+
+  console.log("❌ ORDER CANCELLED");
+  console.log("Shop:", shop);
+  console.log(message);
+
+  return { message };
+}
+
+export async function handleOrderUpdated({
+  shop,
+  order,
+}: OrderNotificationInput) {
+  const customerName =
+    order.customer?.first_name ||
+    order.shipping_address?.first_name ||
+    "Customer";
+
+  const orderNumber = order.order_number || order.name || order.id;
+
+  const message = `
+🔄 Order Updated
+
+Hi ${customerName},
+Your order #${orderNumber} has been updated.
+
+If you didn’t request this change, please contact support.
+  `.trim();
+
+  console.log("🔄 ORDER UPDATED");
+  console.log("Shop:", shop);
+  console.log(message);
+
+  return { message };
 }

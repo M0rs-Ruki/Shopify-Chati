@@ -2,13 +2,14 @@ import type { ChatiEvent } from "../domain/events";
 import {
   handleOrderCreated,
   handleOrderPaid,
+  handleOrderCancelled,
+  handleOrderUpdated,
 } from "./order-notification.server";
 
 import {
   handleFulfillmentCreated,
   handleFulfillmentEvent,
 } from "./fulfillment-notification.server";
-
 
 export async function dispatchChatiEvent(event: ChatiEvent) {
   switch (event.type) {
@@ -34,6 +35,18 @@ export async function dispatchChatiEvent(event: ChatiEvent) {
       return handleFulfillmentEvent({
         shop: event.shop,
         fulfillment: event.payload,
+      });
+
+    case "ORDER_CANCELLED":
+      return handleOrderCancelled({
+        shop: event.shop,
+        order: event.payload,
+      });
+
+    case "ORDER_UPDATED":
+      return handleOrderUpdated({
+        shop: event.shop,
+        order: event.payload,
       });
 
     default:
