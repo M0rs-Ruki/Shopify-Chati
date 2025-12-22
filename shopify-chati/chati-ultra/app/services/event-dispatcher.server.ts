@@ -4,6 +4,12 @@ import {
   handleOrderPaid,
 } from "./order-notification.server";
 
+import {
+  handleFulfillmentCreated,
+  handleFulfillmentEvent,
+} from "./fulfillment-notification.server";
+
+
 export async function dispatchChatiEvent(event: ChatiEvent) {
   switch (event.type) {
     case "ORDER_PLACED":
@@ -16,6 +22,18 @@ export async function dispatchChatiEvent(event: ChatiEvent) {
       return handleOrderPaid({
         shop: event.shop,
         order: event.payload,
+      });
+
+    case "FULFILLMENT_CREATED":
+      return handleFulfillmentCreated({
+        shop: event.shop,
+        fulfillment: event.payload,
+      });
+
+    case "FULFILLMENT_EVENT":
+      return handleFulfillmentEvent({
+        shop: event.shop,
+        fulfillment: event.payload,
       });
 
     default:
