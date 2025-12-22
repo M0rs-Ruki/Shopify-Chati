@@ -10,13 +10,18 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const { topic, shop, payload } = await authenticate.webhook(request);
   const resourceId = String(payload.id);
 
+  console.log("🟢 WEBHOOK RECEIVED:", topic, resourceId);
+
   const { isDuplicate, eventId } = await checkAndRecordWebhook(
     shop,
     topic,
     resourceId,
   );
 
-  if (isDuplicate) return new Response("OK", { status: 200 });
+  if (isDuplicate) {
+    console.log("⚠️ Duplicate webhook ignored");
+    return new Response("OK", { status: 200 });
+  }
 
   try {
     await dispatchChatiEvent({
@@ -25,9 +30,14 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       payload,
     });
 
-    if (eventId) await updateWebhookStatus(eventId, "success");
+    if (eventId) {
+      await updateWebhookStatus(eventId, "success");
+    }
+
     return new Response("OK", { status: 200 });
   } catch (error) {
+    console.error("❌ Webhook processing failed", error);
+
     if (eventId) {
       await updateWebhookStatus(
         eventId,
@@ -35,6 +45,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         error instanceof Error ? error.message : "Unknown error",
       );
     }
+
     return new Response("OK", { status: 200 });
   }
 };

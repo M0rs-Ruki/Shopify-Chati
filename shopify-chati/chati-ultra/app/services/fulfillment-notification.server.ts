@@ -1,6 +1,14 @@
 type FulfillmentNotificationInput = {
   shop: string;
-  fulfillment: any;
+  fulfillment: {
+    id?: string | number;
+    tracking_number?: string | null;
+    tracking_numbers?: string[] | null;
+    tracking_url?: string | null;
+    tracking_urls?: string[] | null;
+    status?: string | null;
+    [key: string]: unknown;
+  };
 };
 
 export async function handleFulfillmentCreated({

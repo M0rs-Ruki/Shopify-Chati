@@ -27,6 +27,22 @@ const shopify = shopifyApp({
       deliveryMethod: DeliveryMethod.Http,
       callbackUrl: "/api/webhooks/orders-paid",
     },
+    ORDERS_CANCELLED: {
+      deliveryMethod: DeliveryMethod.Http,
+      callbackUrl: "/api/webhooks/orders-cancelled",
+    },
+    ORDERS_UPDATE: {
+      deliveryMethod: DeliveryMethod.Http,
+      callbackUrl: "/api/webhooks/orders-updated",
+    },
+    FULFILLMENTS_CREATE: {
+      deliveryMethod: DeliveryMethod.Http,
+      callbackUrl: "/api/webhooks/fulfillments-create",
+    },
+    FULFILLMENT_EVENTS_CREATE: {
+      deliveryMethod: DeliveryMethod.Http,
+      callbackUrl: "/api/webhooks/fulfillment-events-create",
+    },
   },
   future: {
     expiringOfflineAccessTokens: true,
