@@ -6,7 +6,9 @@ export type ChatiEventType =
   | "REFUND_CREATED"
   | "FULFILLMENT_CREATED"
   | "FULFILLMENT_UPDATED"
-  | "FULFILLMENT_EVENT";
+  | "FULFILLMENT_EVENT"
+  | "FULFILLMENT_EVENT_DELETED";
+
 
 export type ChatiEvent = {
   type: ChatiEventType;

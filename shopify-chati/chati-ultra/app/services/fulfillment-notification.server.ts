@@ -57,3 +57,47 @@ export async function handleFulfillmentEvent({
 
   return { message };
 }
+
+export async function handleFulfillmentUpdated({
+  shop,
+  fulfillment,
+}: FulfillmentNotificationInput) {
+  const trackingNumber =
+    fulfillment.tracking_number || fulfillment.tracking_numbers?.[0] || "N/A";
+
+  const trackingUrl =
+    fulfillment.tracking_url || fulfillment.tracking_urls?.[0] || null;
+
+  const message = `
+📦 Shipping Update
+
+Your tracking details have been updated.
+
+Tracking number: ${trackingNumber}
+${trackingUrl ? `Track here: ${trackingUrl}` : ""}
+  `.trim();
+
+  console.log("🔁 FULFILLMENT UPDATED");
+  console.log("Shop:", shop);
+  console.log(message);
+
+  return { message };
+}
+
+export async function handleFulfillmentEventDeleted({
+  shop,
+  fulfillment,
+}: FulfillmentNotificationInput) {
+  const message = `
+⚠️ Delivery Update Cancelled
+
+A previous delivery update for your order has been removed.
+If you have questions, please contact support.
+  `.trim();
+
+  console.log("🗑️ FULFILLMENT EVENT DELETED");
+  console.log("Shop:", shop);
+  console.log(message);
+
+  return { message };
+}

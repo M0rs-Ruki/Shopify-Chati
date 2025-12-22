@@ -43,6 +43,18 @@ const shopify = shopifyApp({
       deliveryMethod: DeliveryMethod.Http,
       callbackUrl: "/api/webhooks/fulfillment-events-create",
     },
+    REFUNDS_CREATE: {
+      deliveryMethod: DeliveryMethod.Http,
+      callbackUrl: "/api/webhooks/refunds-create",
+    },
+    FULFILLMENTS_UPDATE: {
+      deliveryMethod: DeliveryMethod.Http,
+      callbackUrl: "/api/webhooks/fulfillments-update",
+    },
+    FULFILLMENT_EVENTS_DELETE: {
+      deliveryMethod: DeliveryMethod.Http,
+      callbackUrl: "/api/webhooks/fulfillment-events-delete",
+    },
   },
   future: {
     expiringOfflineAccessTokens: true,

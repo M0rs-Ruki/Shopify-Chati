@@ -10,6 +10,8 @@ import {
 import {
   handleFulfillmentCreated,
   handleFulfillmentEvent,
+  handleFulfillmentUpdated,
+  handleFulfillmentEventDeleted,
 } from "./fulfillment-notification.server";
 
 export async function dispatchChatiEvent(event: ChatiEvent) {
@@ -54,6 +56,18 @@ export async function dispatchChatiEvent(event: ChatiEvent) {
       return handleRefundCreated({
         shop: event.shop,
         refund: event.payload,
+      });
+
+    case "FULFILLMENT_UPDATED":
+      return handleFulfillmentUpdated({
+        shop: event.shop,
+        fulfillment: event.payload,
+      });
+
+    case "FULFILLMENT_EVENT_DELETED":
+      return handleFulfillmentEventDeleted({
+        shop: event.shop,
+        fulfillment: event.payload,
       });
 
     default:
