@@ -32,3 +32,18 @@ model Session {
   refreshToken        String?
   refreshTokenExpires DateTime?
 }
+
+model WebhookEvent {
+  id          Int       @id @default(autoincrement())
+  eventKey    String    @unique
+  shop        String
+  topic       String
+  resourceId  String
+  status      String    @default("pending") // pending, success, failed
+  error       String?
+  processedAt DateTime?
+  createdAt   DateTime  @default(now())
+
+  @@index([shop])
+  @@index([topic])
+}
