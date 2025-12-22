@@ -26,6 +26,33 @@ type OrderNotificationInput = {
   };
 };
 
+type RefundNotificationInput = {
+  shop: string;
+  refund: {
+    id?: string | number;
+    amount?: string | number | null;
+    transactions?: Array<{
+      amount?: string | number | null;
+      currency?: string | null;
+    }> | null;
+    order?: {
+      id?: string | number;
+      order_number?: string | number | null;
+      name?: string | null;
+      currency?: string | null;
+      customer?: {
+        first_name?: string | null;
+        last_name?: string | null;
+      } | null;
+      shipping_address?: {
+        first_name?: string | null;
+        last_name?: string | null;
+      } | null;
+    } | null;
+    [key: string]: unknown;
+  };
+};
+
 export async function handleOrderCreated({
   shop,
   order,
@@ -175,6 +202,40 @@ If you didn’t request this change, please contact support.
   `.trim();
 
   console.log("🔄 ORDER UPDATED");
+  console.log("Shop:", shop);
+  console.log(message);
+
+  return { message };
+}
+
+export async function handleRefundCreated({
+  shop,
+  refund,
+}: RefundNotificationInput) {
+  const order = refund.order || {};
+  const customerName =
+    order.customer?.first_name ||
+    order.shipping_address?.first_name ||
+    "Customer";
+
+  const orderNumber = order.order_number || order.name || order.id;
+  const refundAmount =
+    refund.transactions?.[0]?.amount || refund.amount || "0.00";
+  const currency =
+    refund.transactions?.[0]?.currency || order.currency || "USD";
+
+  const message = `
+💸 Refund Processed
+
+Hi ${customerName},
+A refund has been issued for your order #${orderNumber}.
+
+Refund amount: ${refundAmount} ${currency}
+
+The amount will be credited back to your original payment method.
+  `.trim();
+
+  console.log("💸 REFUND CREATED");
   console.log("Shop:", shop);
   console.log(message);
 

@@ -4,6 +4,7 @@ import {
   handleOrderPaid,
   handleOrderCancelled,
   handleOrderUpdated,
+  handleRefundCreated,
 } from "./order-notification.server";
 
 import {
@@ -47,6 +48,12 @@ export async function dispatchChatiEvent(event: ChatiEvent) {
       return handleOrderUpdated({
         shop: event.shop,
         order: event.payload,
+      });
+
+    case "REFUND_CREATED":
+      return handleRefundCreated({
+        shop: event.shop,
+        refund: event.payload,
       });
 
     default:
