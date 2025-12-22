@@ -1,0 +1,64 @@
+import type { ActionFunctionArgs } from "react-router";
+import { authenticate } from "~/shopify.server";
+
+export const action = async ({ request }: ActionFunctionArgs) => {
+  const { payload } = await authenticate.webhook(request);
+
+  const order = payload;
+
+  console.log("🟢 ORDER RECEIVED:", order.id);
+
+  // ✅ EXTRACT CUSTOMER CONTACT INFO
+  const customerPhone = order.phone || order.shipping_address?.phone || null;
+  const customerEmail = order.email || null;
+  const customerName = 
+    order.customer?.first_name || 
+    order.shipping_address?.first_name || 
+    "Customer";
+
+  // ✅ EXTRACT ORDER DETAILS
+  const orderNumber = order.order_number || order.name || order.id;
+  const orderTotal = order.total_price || "0.00";
+  const currency = order.currency || "USD";
+  const orderDate = order.created_at || new Date().toISOString();
+
+  // ✅ BUILD ITEMS LIST
+  const itemsList = order.line_items?.map((item: any) => 
+    `  • ${item.name} x${item.quantity} - ${item.price} ${currency}`
+  ).join("\n") || "No items";
+
+  // ✅ BUILD NOTIFICATION MESSAGE
+  const message = `
+🎉 Thank you ${customerName}!
+
+Your order #${orderNumber} has been confirmed!
+Total: ${orderTotal} ${currency}
+
+Items:
+${itemsList}
+
+We'll notify you when your order ships! 🚚
+  `.trim();
+
+  // ✅ LOG EXTRACTED DATA
+  console.log("📦 ORDER DETAILS:");
+  console.log("  Order #:", orderNumber);
+  console.log("  Customer:", customerName);
+  console.log("  Phone:", customerPhone || "Not provided");
+  console.log("  Email:", customerEmail || "Not provided");
+  console.log("  Total:", `${orderTotal} ${currency}`);
+  console.log("  Items:", order.line_items?.length || 0);
+  
+  console.log("\n💬 MESSAGE TO SEND:");
+  console.log(message);
+
+  // ✅ TODO: SEND NOTIFICATION
+  // await sendWhatsApp(customerPhone, message);
+  // OR
+  // await sendEmail(customerEmail, message);
+  // OR
+  // await sendSMS(customerPhone, message);
+
+  return new Response("OK");
+};
+
