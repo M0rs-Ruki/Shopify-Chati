@@ -1,17 +1,14 @@
 import type { ActionFunctionArgs } from "react-router";
 import { authenticate } from "../shopify.server";
-import db from "../db.server";
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const { shop } = await authenticate.webhook(request);
 
   console.log("🧨 SHOP REDACT:", shop);
+  console.log("ℹ️ Data deletion will be handled by Chati Core (MongoDB)");
 
-  // Delete ALL shop data
-  await db.session.deleteMany({ where: { shop } });
-  await db.webhookEvent.deleteMany({ where: { shop } });
-
-  // Later: delete settings, configs, logs
+  // No DB cleanup needed - app is stateless
+  // Data deletion will be handled by Chati Core service (MongoDB) later
 
   return new Response("OK", { status: 200 });
 };

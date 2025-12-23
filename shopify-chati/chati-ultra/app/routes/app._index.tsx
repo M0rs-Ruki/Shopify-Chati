@@ -3,11 +3,6 @@ import type { HeadersFunction, LoaderFunctionArgs } from "react-router";
 import { useLoaderData, useSearchParams } from "react-router";
 import { boundary } from "@shopify/shopify-app-react-router/server";
 import { authenticate } from "../shopify.server";
-import {
-  getWebhookStats,
-  getRecentWebhookEvents,
-  getWebhookEvents,
-} from "../utils/webhook-queries.server";
 import { AppHeader } from "../components/AppHeader";
 import { DashboardTab } from "../components/DashboardTab";
 import { EventsTab } from "../components/EventsTab";
@@ -25,30 +20,40 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     | "failed"
     | null;
   const topic = url.searchParams.get("topic") || null;
-  const filters = { ...(status && { status }), ...(topic && { topic }) };
 
-  const [stats, recentEvents, eventsResult] = await Promise.all([
-    getWebhookStats(shop),
-    getRecentWebhookEvents(shop, 5),
-    getWebhookEvents(shop, filters, { page, limit }),
-  ]);
+  // Return empty/mock data - events will be available in Chati Core (MongoDB) later
+  const stats = {
+    total: 0,
+    pending: 0,
+    success: 0,
+    failed: 0,
+  };
 
-  const db = (await import("../db.server")).default;
-  const normalizedShop = shop.toLowerCase().trim();
-  let topics = await db.webhookEvent.findMany({
-    where: { shop: normalizedShop },
-    select: { topic: true },
-    distinct: ["topic"],
-    orderBy: { topic: "asc" },
-  });
+  const recentEvents: never[] = [];
 
-  if (topics.length === 0) {
-    topics = await db.webhookEvent.findMany({
-      select: { topic: true },
-      distinct: ["topic"],
-      orderBy: { topic: "asc" },
-    });
-  }
+  const eventsResult = {
+    events: [],
+    total: 0,
+    page: 1,
+    limit: 20,
+    totalPages: 0,
+  };
+
+  // Available webhook topics (hardcoded list)
+  const availableTopics = [
+    "orders/create",
+    "orders/paid",
+    "orders/cancelled",
+    "orders/update",
+    "fulfillments/create",
+    "fulfillments/update",
+    "fulfillment_events/create",
+    "fulfillment_events/delete",
+    "refunds/create",
+    "checkouts/create",
+    "checkouts/update",
+    "checkouts/delete",
+  ];
 
   return {
     shop,
@@ -62,7 +67,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       totalPages: eventsResult.totalPages,
     },
     filters: { status, topic },
-    availableTopics: topics.map((t) => t.topic),
+    availableTopics,
   };
 };
 

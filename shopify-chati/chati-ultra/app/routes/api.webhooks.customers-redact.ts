@@ -1,6 +1,5 @@
 import type { ActionFunctionArgs } from "react-router";
 import { authenticate } from "../shopify.server";
-import db from "../db.server";
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const { shop, payload } = await authenticate.webhook(request);
@@ -8,10 +7,10 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   console.log("🧹 CUSTOMER REDACT");
   console.log("Shop:", shop);
   console.log("Customer ID:", payload.customer?.id);
+  console.log("ℹ️ Customer data deletion will be handled by Chati Core (MongoDB)");
 
-  // Delete or anonymize customer data in your DB
-  // Example (if stored later):
-  // await db.customer.deleteMany({ where: { shop, customerId: payload.customer.id } });
+  // No DB cleanup needed - app is stateless
+  // Customer data deletion will be handled by Chati Core service (MongoDB) later
 
   return new Response("OK", { status: 200 });
 };
