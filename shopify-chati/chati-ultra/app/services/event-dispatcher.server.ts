@@ -14,6 +14,12 @@ import {
   handleFulfillmentEventDeleted,
 } from "./fulfillment-notification.server";
 
+import {
+  handleCheckoutCreated,
+  handleCheckoutUpdated,
+  handleCheckoutDeleted,
+} from "./checkout-notification.server";
+
 export async function dispatchChatiEvent(event: ChatiEvent) {
   switch (event.type) {
     case "ORDER_PLACED":
@@ -68,6 +74,24 @@ export async function dispatchChatiEvent(event: ChatiEvent) {
       return handleFulfillmentEventDeleted({
         shop: event.shop,
         fulfillment: event.payload,
+      });
+
+    case "CHECKOUT_CREATED":
+      return handleCheckoutCreated({
+        shop: event.shop,
+        checkout: event.payload,
+      });
+
+    case "CHECKOUT_UPDATED":
+      return handleCheckoutUpdated({
+        shop: event.shop,
+        checkout: event.payload,
+      });
+
+    case "CHECKOUT_DELETED":
+      return handleCheckoutDeleted({
+        shop: event.shop,
+        checkout: event.payload,
       });
 
     default:
