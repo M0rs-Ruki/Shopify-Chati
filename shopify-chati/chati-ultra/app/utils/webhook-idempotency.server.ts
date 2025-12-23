@@ -54,9 +54,12 @@ export async function checkAndRecordWebhook(
  * Status tracking will be handled by Chati Core (MongoDB) later
  */
 export async function updateWebhookStatus(
-  eventId: string,
-  status: "success" | "failed",
-  error?: string,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  _eventId: string,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  _status: "success" | "failed",
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  _error?: string,
 ): Promise<void> {
   // In-memory implementation - no-op
   // Status will be tracked in Chati Core (MongoDB) later
