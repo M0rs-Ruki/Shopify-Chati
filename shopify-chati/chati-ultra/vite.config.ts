@@ -1,6 +1,8 @@
 import { reactRouter } from "@react-router/dev/vite";
 import { defineConfig, type UserConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
+import tailwindcss from "tailwindcss";
+import autoprefixer from "autoprefixer";
 
 // Related: https://github.com/remix-run/remix/issues/2835#issuecomment-1144102176
 // Replace the HOST env var with SHOPIFY_APP_URL so that it doesn't break the Vite server.
@@ -55,7 +57,15 @@ export default defineConfig({
   build: {
     assetsInlineLimit: 0,
   },
+  css: {
+    postcss: {
+      plugins: [tailwindcss, autoprefixer],
+    },
+  },
   optimizeDeps: {
-    include: ["@shopify/app-bridge-react"],
+    include: ["@shopify/app-bridge-react", "@shopify/polaris"],
+  },
+  ssr: {
+    noExternal: ["@shopify/polaris"],
   },
 }) satisfies UserConfig;

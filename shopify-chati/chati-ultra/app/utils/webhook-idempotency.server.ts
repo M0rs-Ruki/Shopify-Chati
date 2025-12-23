@@ -23,13 +23,15 @@ export async function checkAndRecordWebhook(
   topic: string,
   resourceId: string,
 ): Promise<{ isDuplicate: boolean; eventId?: number }> {
-  const eventKey = generateEventKey(shop, topic, resourceId);
+  // Normalize shop name for consistency
+  const normalizedShop = shop.toLowerCase().trim();
+  const eventKey = generateEventKey(normalizedShop, topic, resourceId);
 
   try {
     const event = await db.webhookEvent.create({
       data: {
         eventKey,
-        shop,
+        shop: normalizedShop,
         topic,
         resourceId,
         status: "pending",
