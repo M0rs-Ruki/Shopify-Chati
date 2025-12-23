@@ -20,11 +20,6 @@ export default function App() {
   return (
     <ShopifyAppProvider embedded apiKey={apiKey}>
       <AppProvider i18n={enTranslations}>
-        <s-app-nav>
-          <s-link href="/app">Dashboard</s-link>
-          <s-link href="/app/events">Events</s-link>
-          <s-link href="/app/settings">Settings</s-link>
-        </s-app-nav>
         <Outlet />
       </AppProvider>
     </ShopifyAppProvider>
